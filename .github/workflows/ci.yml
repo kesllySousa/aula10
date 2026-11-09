@@ -30,19 +30,12 @@ jobs:
         run: mvn checkstyle:check
         continue-on-error: true
 
-      - name: SonarQube Scan
+      - name: SonarQube Scan & Quality Gate
         uses: SonarSource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
-
-  deploy-staging:
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: staging
-
-    steps:
-      - name: Deploy to Staging Environment
-        run: echo "Deploy efetuado com sucesso após aprovação!"
